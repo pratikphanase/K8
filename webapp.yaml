@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp-deployment
+  namespace: dev
+  labels:
+    app: webapp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp  # Changed 'apps' to 'app' for consistency
+  template:  # Corrected 'temoplate' to 'template'
+    metadata:
+      labels:  # Changed 'Labels' to 'labels' (YAML is case-sensitive)
+        app: webapp
+    spec:
+      containers:  # Corrected 'container' to 'containers'
+      - name: webapp
+        image: dockerhandson/spring-boot-mongo:1
+        ports:
+        - containerPort: 8080
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAM
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: MONGO_INITDB_ROOT_USERNAME
+        - name: MONGO_INITDB_ROOT_PASSWORD  # Corrected indentation
+          valueFrom:
+            secretKeyRef:
+              name: mongo-secret
+              key: MONGO_INITDB_ROOT_PASSWORD
+        - name: MONGO_DB_HOSTNAME
+          valueFrom:
+            configMapKeyRef:  # Corrected 'configMapkeyRef' to 'configMapKeyRef'
+              name: mongo-config
+              key: MONGO_DB_HOSTNAME
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp-service
+  namespace: dev
+spec:
+  type: NodePort
+  selector:
+    app: webapp
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+      nodePort: 30100
+

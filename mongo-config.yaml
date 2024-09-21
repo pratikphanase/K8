@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: mongo-config
+  namespace: dev
+data:
+ MONGO_DB_HOSTNAME: mongo-service.dev.svc.cluster.local
